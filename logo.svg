@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="320" viewBox="0 0 720 320" role="img" aria-label="WZTI 王者人格金色王冠徽记">
+<defs><linearGradient id="gold" x1="0" y1="0" x2=".3" y2="1"><stop stop-color="#e0c280"/><stop offset=".45" stop-color="#b18a45"/><stop offset="1" stop-color="#8e6a32"/></linearGradient></defs>
+<g fill="none" stroke="url(#gold)"><path d="M291 102a78 78 0 1 1 138 0" stroke-width="4"/><path d="M302 96a65 65 0 1 1 116 0" stroke-width="1" opacity=".6"/></g>
+<path d="M294 96a72 72 0 0 1 48-79" fill="none" stroke="#718c9b" stroke-width="7" opacity=".65"/><path d="M378 17a72 72 0 0 1 48 79" fill="none" stroke="#b87569" stroke-width="7" opacity=".65"/>
+<g fill="url(#gold)"><path d="M309 42l27 18 24-31 24 31 27-18-12 42h-78z"/><path d="M328 92h64l-7 6h-50z"/><path d="M355 4l5-4 5 4-5 9z"/><path d="M275 52l7 8-7 8-7-8zM445 52l7 8-7 8-7-8z"/>
+<path d="M61 117h40l13 75 28-75h32l14 75 29-75h42l-58 122h-37l-14-68-27 68H86zM270 117h108l-4 25-70 70h62l-5 27H250l4-24 72-70h-61zM397 117h115l-5 29h-38l-18 93h-39l19-93h-40zM534 117h43l-24 122h-43z"/>
+<path d="M593 125l43-24-20 39-44 91-11 8 5-16z"/><path d="M573 196l36 17-5 8-37-17zM575 214l13 6-16 30-12-7z"/>
+<path d="M155 276h108v2H155zM457 276h108v2H457z"/></g>
+<text x="360" y="288" text-anchor="middle" fill="#927039" font-family="Microsoft YaHei,PingFang SC,sans-serif" font-size="29" font-weight="700" letter-spacing="10">王者人格</text>
+</svg>
