@@ -23,6 +23,11 @@ jobs:
         run: |
           node --check app.js
           node --check match.js
+      - name: Cache lightweight images
+        uses: actions/cache@v4
+        with:
+          path: Images/Outputs_Images/*.webp
+          key: webp-v2-${{ hashFiles('Images/Outputs_Images/*.png', 'scripts/prepare_images.py') }}
       - name: Install image encoder
         run: python -m pip install Pillow==11.3.0
       - name: Generate lightweight images
@@ -33,7 +38,8 @@ jobs:
         run: |
           mkdir _site
           cp index.html style.css app.js match.js config.json _site/
-          cp -R Images fonts _site/
+          mkdir -p _site/Images/Outputs_Images
+          cp Images/Outputs_Images/*.webp _site/Images/Outputs_Images/
           touch _site/.nojekyll
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
