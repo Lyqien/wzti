@@ -22,15 +22,14 @@ jobs:
       - name: Check JavaScript
         run: |
           node --check app.js
-          node --check art.js
-          node --check questions.js
-          node --check heroes.js
+          node --check match.js
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Prepare static files
         run: |
           mkdir _site
-          cp index.html style.css heroes.js questions.js art.js app.js logo.svg _site/
+          cp index.html style.css app.js match.js config.json _site/
+          cp -R Images fonts _site/
           touch _site/.nojekyll
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
