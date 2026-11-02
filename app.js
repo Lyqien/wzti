@@ -1,10 +1,10 @@
 'use strict';
-let config, answers={}, current=0, screen='home', transitionTimer;
+let config=globalThis.WZTI_CONFIG, answers={}, current=0, screen='home', transitionTimer;
 const app=document.querySelector('#app');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const asset=s=>new URL(s.replace(/\.png$/i,".webp"),document.baseURI).href;
 function show(html){clearTimeout(transitionTimer);document.body.classList.toggle("answering",screen==="question");document.documentElement.classList.toggle("answering",screen==="question");app.innerHTML=html;window.scrollTo({top:0,behavior:'instant'});const heading=app.querySelector('h1');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}}
-function home(){screen='home', transitionTimer;show(`<section class="home"><img class="home-logo home-icon" src="${asset(config?.brand.icon||"Images/Outputs_Images/WZTI-icon.png")}" alt="WZTI"><div class="eyebrow">王者荣耀人格测试</div><h1>来测测你的农格</h1><p class="completion-time">约5-8分钟完成</p><button class="primary" id="start" ${config?'':'disabled'}>${config?'开始测试':'正在准备题目…'}</button></section>`);document.querySelector('#start').onclick=()=>{answers={};current=0;question()}}
+function home(){screen='home', transitionTimer;show(`<section class="home"><img class="home-logo home-icon" src="${config.brand.iconDataURI}" alt="WZTI"><div class="eyebrow">王者荣耀人格测试</div><h1>来测测你的农格</h1><p class="completion-time">约5-8分钟完成</p><button class="primary" id="start">开始测试</button></section>`);document.querySelector('#start').onclick=()=>{answers={};current=0;question()}}
 function question(){screen='question';const q=config.questions[current];show(`<section class="question"><div class="meta"><span>答题进度</span><span><strong>${String(current+1).padStart(2,'0')}</strong> / 28</span></div><div class="progress" role="progressbar" aria-label="已完成题目" aria-valuemin="0" aria-valuemax="28" aria-valuenow="${Object.keys(answers).length}"><i style="width:${Object.keys(answers).length/28*100}%"></i></div><h1>${esc(q.question)}</h1><div class="options" role="group" aria-label="请选择一个答案">${Object.entries(q.options).map(([key,value])=>`<button class="option ${answers[q.id]===key?'selected':''}" aria-pressed="${answers[q.id]===key}" data-key="${key}"><b>${key}</b><span>${esc(value)}</span></button>`).join('')}</div><div class="nav"><button class="secondary" id="prev" ${current===0?'disabled':''}>← 上一题</button></div></section>`);app.querySelectorAll('.option').forEach(btn=>btn.onclick=()=>{if(btn.disabled)return;answers[q.id]=btn.dataset.key;app.querySelectorAll('.option').forEach(el=>{el.disabled=true;el.classList.toggle('selected',el===btn);el.setAttribute('aria-pressed',el===btn)});transitionTimer=setTimeout(()=>{if(current<27){current++;question()}else result()},220)});document.querySelector('#prev').onclick=()=>{if(current>0){current--;question()}}}
 
 
@@ -14,6 +14,10 @@ async function loadHeroImage(preview){if(!preview.isConnected||preview.dataset.l
 window.addEventListener('online',()=>app.querySelectorAll('img[data-original]:not([data-ready])').forEach(loadHeroImage));
 
 function result(){const output=matchWZTI(config,answers);if(output.status!=='matched'){current=config.questions.findIndex(q=>q.id===output.missing[0]);question();return}screen='result';const r=output.result,p=r['最佳匹配英雄'];show(`<article class="result">${heroImage(r,"hero")}<div class="eyebrow">你的英雄人格</div><h1>${esc(r['英雄名称'])}</h1><div class="persona">${esc(r['人格标题'])}</div><blockquote>“${esc(r['英雄台词'])}”</blockquote><section class="panel"><h2 class="section-title">你的性格底色</h2><p>${esc(r['性格描述'])}</p></section><section class="panel"><h2 class="section-title">你的性格八维</h2><div class="chart" role="img" aria-label="${esc(Object.entries(r['性格维度百分比']).map(([k,v])=>k+v+'%').join('，'))}">${Object.entries(r['性格维度百分比']).map(([k,v])=>`<div class="column"><b>${v}%</b><div class="track"><div class="fill" style="height:${v}%"></div></div><small>${esc(k)}</small></div>`).join('')}</div><p class="chart-note">根据本次选择生成的八项性格倾向，各项独立计算。</p></section><section class="panel partner"><h2 class="section-title">最佳匹配英雄</h2>${heroImage(p,"partner")}<h3>${esc(p['英雄名称'])}</h3><p class="subtitle">${esc(p['匹配标题'])}</p><p>${esc(p['匹配理由'])}</p></section><div class="result-actions"><button class="primary" id="restart">再测一次</button></div></article>`);app.querySelectorAll('img[data-original]').forEach(loadHeroImage);document.querySelector('#restart').onclick=()=>{answers={};current=0;home()}}
-document.querySelector('#brand').onclick=e=>{e.preventDefault();if(config)home()};
-home();
-fetch('runtime-config.json').then(r=>{if(!r.ok)throw Error();return r.json()}).then(c=>{config=c;home()}).catch(()=>{app.innerHTML='<p class="loading">资料加载失败，请刷新页面重试。</p>'});
+document.querySelector('#brand').onclick=e=>{e.preventDefault();home()};
+async function boot(){
+  document.querySelector('#brand img').src=config.brand.logoDataURI;
+  await Promise.all([config.brand.iconDataURI,config.brand.logoDataURI].map(src=>new Promise(resolve=>{const image=new Image();image.onload=()=>{if(image.decode)image.decode().then(resolve,resolve);else resolve()};image.onerror=resolve;image.src=src})));
+  home();document.body.style.visibility='visible';
+}
+boot();
