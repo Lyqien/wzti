@@ -29,6 +29,7 @@ jobs:
           path: |
             Images/Outputs_Images/*.webp
             Images/Backup/*.png
+            Images/Outputs_Images/webp-recipe.txt
           key: webp-v2-${{ hashFiles('Images/Outputs_Images/*.png', 'scripts/prepare_images.py') }}
       - name: Install image encoder
         run: python -m pip install Pillow==11.3.0

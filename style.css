@@ -52,3 +52,5 @@ body.answering .preview-nav{display:none}
 .image-status button{border:0;background:transparent;text-decoration:underline;color:#816226;padding:3px 4px;font-size:12px}
 
 body.answering .nav{gap:10px}body.answering #retry-result{font-size:14px;padding:8px 12px;min-height:44px}
+
+.image-retry{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:#faf5e9;border:1px solid #cbb17b;color:#756b5d;border-radius:4px;padding:8px 14px;font-size:13px}.image-retry[hidden]{display:none}
