@@ -15,3 +15,7 @@
 GitHub Actions 自动部署到 GitHub Pages。可本地使用任意静态服务器预览，请勿直接双击HTML（需要读取JSON）。
 
 旧版保留在 Git 提交历史和 `archive/before-2026-11-02` 分支中。
+
+## 图片分发与缓存
+
+`cdn.json` 固定到 `web-release` 分支的具体发布提交，通过 jsDelivr 分发压缩清晰图。图片请求同时尝试CDN和原站，先成功的线路生效；浏览器支持时，将成功图片保存到版本化地址对应的Cache Storage。图片失败不阻塞结果页。更新英雄图片时应同时更新资源发布和CDN提交版本，避免使用旧缓存。
