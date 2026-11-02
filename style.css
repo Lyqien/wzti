@@ -43,3 +43,10 @@ body.answering .preview-nav{display:none}
 @media(max-height:500px){body.answering .question{gap:6px}body.answering .question h1{font-size:21px;margin:8px 0 14px}body.answering .options{gap:6px}body.answering .option{font-size:14px;line-height:1.4;padding:6px 10px}}
 
 @media(max-height:420px){body.answering .question h1{font-size:20px;margin:6px 0 10px}}
+
+.home .home-icon{width:196px;max-width:60vw;aspect-ratio:1;object-fit:contain;margin:4px auto 28px}
+.completion-time{font-size:13px;color:var(--muted);margin:10px 0 0}
+.home h1{margin-bottom:8px}
+.image-status{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:8px;width:max-content;max-width:calc(100% - 28px);padding:3px 9px;background:#faf5e9ed;border:1px solid #dfd0ad;border-radius:4px;color:#756b5d;font-size:11px;line-height:1.6}
+.image-status[hidden],.image-status button[hidden]{display:none}
+.image-status button{border:0;background:transparent;text-decoration:underline;color:#816226;padding:3px 4px;font-size:12px}

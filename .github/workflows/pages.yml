@@ -26,7 +26,9 @@ jobs:
       - name: Cache lightweight images
         uses: actions/cache@v4
         with:
-          path: Images/Outputs_Images/*.webp
+          path: |
+            Images/Outputs_Images/*.webp
+            Images/Backup/*.png
           key: webp-v2-${{ hashFiles('Images/Outputs_Images/*.png', 'scripts/prepare_images.py') }}
       - name: Install image encoder
         run: python -m pip install Pillow==11.3.0
@@ -37,9 +39,10 @@ jobs:
       - name: Prepare static files
         run: |
           mkdir _site
-          cp index.html style.css app.js match.js config.json _site/
+          cp index.html style.css app.js match.js config.json runtime-config.json icon-32.png _site/
           mkdir -p _site/Images/Outputs_Images
           cp Images/Outputs_Images/*.webp _site/Images/Outputs_Images/
+          cp -R Images/Backup _site/Images/
           touch _site/.nojekyll
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3

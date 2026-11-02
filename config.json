@@ -1,5 +1,5 @@
 {
-  "version": "WZTI-entertainment-v7-28-images-logo",
+  "version": "WZTI-entertainment-v8-28-images-logo-icon",
   "questions": [
     {
       "id": "Q01",
@@ -4598,6 +4598,9 @@
     "subtitle": "王者荣耀人格测试",
     "logo": "Images/Outputs_Images/WZTI-logo.png",
     "logoWidth": 1536,
-    "logoHeight": 1024
+    "logoHeight": 1024,
+    "icon": "Images/Outputs_Images/WZTI-icon.png",
+    "iconWidth": 256,
+    "iconHeight": 256
   }
 }
