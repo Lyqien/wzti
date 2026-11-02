@@ -54,3 +54,5 @@ body.answering .preview-nav{display:none}
 body.answering .nav{gap:10px}body.answering #retry-result{font-size:14px;padding:8px 12px;min-height:44px}
 
 .image-retry{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:#faf5e9;border:1px solid #cbb17b;color:#756b5d;border-radius:4px;padding:8px 14px;font-size:13px}.image-retry[hidden]{display:none}
+
+.creator-note{margin:30px auto 0;text-align:center;color:var(--muted);font-size:13px;line-height:1.9}.creator-note p{margin:6px 0}.creator-note a{color:inherit;text-decoration:underline;text-decoration-color:#cbb17b;text-underline-offset:4px;overflow-wrap:anywhere}
