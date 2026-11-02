@@ -1,8 +1,9 @@
 """Build a ready-to-use page with no critical network dependencies."""
 from pathlib import Path
-import json,base64,re
+import json,base64,re,hashlib
 root=Path(__file__).resolve().parents[1]
-config=json.loads((root/'runtime-config.json').read_bytes())
+config=json.loads((root/'config.json').read_bytes())
+config['imageVersions']={p.relative_to(root).as_posix():hashlib.sha256(p.with_suffix('.webp').read_bytes()).hexdigest()[:10] for p in (root/'Images'/'Outputs_Images').glob('*.png')}
 for kind in ['icon','logo']:
     source=root/config['brand'][kind]
     config['brand'][kind+'DataURI']='data:image/webp;base64,'+base64.b64encode(source.with_suffix('.webp').read_bytes()).decode('ascii')

@@ -50,3 +50,5 @@ body.answering .preview-nav{display:none}
 .image-status{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:8px;width:max-content;max-width:calc(100% - 28px);padding:3px 9px;background:#faf5e9ed;border:1px solid #dfd0ad;border-radius:4px;color:#756b5d;font-size:11px;line-height:1.6}
 .image-status[hidden],.image-status button[hidden]{display:none}
 .image-status button{border:0;background:transparent;text-decoration:underline;color:#816226;padding:3px 4px;font-size:12px}
+
+body.answering .nav{gap:10px}body.answering #retry-result{font-size:14px;padding:8px 12px;min-height:44px}

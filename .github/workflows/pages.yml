@@ -41,7 +41,7 @@ jobs:
       - name: Prepare static files
         run: |
           mkdir _site
-          cp index.html style.css app.js match.js config.json runtime-config.json icon-32.png _site/
+          cp index.html style.css app.js match.js config.json icon-32.png _site/
           mkdir -p _site/Images/Outputs_Images
           cp Images/Outputs_Images/*.webp _site/Images/Outputs_Images/
           cp -R Images/Backup _site/Images/
