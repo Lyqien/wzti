@@ -32,7 +32,7 @@ globalThis.WZTIShare=(()=>{
     ctx.strokeStyle='#ded0b0';ctx.beginPath();ctx.moveTo(64,footer-18);ctx.lineTo(686,footer-18);ctx.stroke();
     ctx.imageSmoothingEnabled=false;ctx.drawImage(qr,76,footer,148,148);ctx.imageSmoothingEnabled=true;
     ctx.textAlign='left';ctx.font='700 28px '+font;ctx.fillStyle='#332e27';ctx.fillText('来测测你的农格',254,footer+55);
-    ctx.font='20px '+font;ctx.fillStyle='#756b5d';ctx.fillText('129位全英雄 · 共28题',254,footer+96);ctx.fillText('扫码开始 · 测试仅供娱乐',254,footer+132);
+    ctx.font='20px '+font;ctx.fillStyle='#756b5d';ctx.fillText('129位全英雄',254,footer+96);ctx.fillText('扫码开始 · 测试仅供娱乐',254,footer+132);
     return {url:canvas.toDataURL('image/png'),canvas};
   }
   return {card};

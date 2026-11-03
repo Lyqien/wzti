@@ -7,7 +7,7 @@ function show(html){document.querySelector('#copy-toast')?.remove();document.doc
 function removeSharedHash(){if(location.hash)history.replaceState(null,'',location.pathname+location.search)}
 function home(message=''){
   screen='home';sharedView=false;answers={};current=0;
-  show(`<section class="home"><img class="home-logo home-icon" src="${config.brand.iconDataURI}" alt="WZTI"><div class="eyebrow">王者荣耀人格测试</div><h1>来测测你的农格</h1><p class="completion-time">129位全英雄 · 约5-8分钟完成</p><p class="test-instruction">共28题，选更接近平时状态的一项</p>${message?`<p class="progress-notice" role="status">${esc(message)}</p>`:''}<button class="primary" id="start">开始测试</button><div class="creator-note"><p>由一名重度农友制作</p><p>还想测什么人格？我来帮你做！</p><p>联系我 <a href="mailto:3229065685@qq.com">3229065685@qq.com</a></p><p>（也可以找作者打游戏！）</p></div></section>`);
+  show(`<section class="home"><img class="home-logo home-icon" src="${config.brand.iconDataURI}" alt="WZTI"><div class="eyebrow">王者荣耀人格测试</div><h1>来测测你的农格</h1><p class="completion-time">129位全英雄 · 约5-8分钟完成</p>${message?`<p class="progress-notice" role="status">${esc(message)}</p>`:''}<button class="primary" id="start">开始测试</button><div class="creator-note"><p>由一名重度农友制作</p><p>还想测什么人格？我来帮你做！</p><p>联系我 <a href="mailto:3229065685@qq.com">3229065685@qq.com</a></p><p>（也可以找作者打游戏！）</p></div></section>`);
   WZTIStats.home();
   document.querySelector('#start').onclick=()=>{removeSharedHash();sharedView=false;answers={};current=0;question();setTimeout(warmImages,0)};
 }
@@ -83,7 +83,7 @@ function result({friend=false}={}){
   app.querySelectorAll('[data-dimension]').forEach(button=>button.onclick=()=>{
     const index=Number(button.dataset.dimension),rule=config.dimensionRules[index],detail=document.querySelector('#dimension-detail');const close=false;
     app.querySelectorAll('[data-dimension]').forEach(b=>b.setAttribute('aria-expanded','false'));detail.hidden=close;if(close)return;
-    button.setAttribute('aria-expanded','true');detail.innerHTML=`<h3>${esc(rule.name)}</h3><p>${esc(rule.description)}。</p><p>${esc(rule['展示说明'].replace('；各项独立，不要求相加为100。','。'))}</p><p><strong>较低倾向时：</strong>${esc(rule['较低倾向说明'])}</p>`;
+    button.setAttribute('aria-expanded','true');detail.innerHTML=`<h3>${esc(rule.name)}</h3><p>${esc(rule.description)}。</p><p><strong>较低倾向时：</strong>${esc(rule['较低倾向说明'])}</p>`;
   });
   document.querySelector('[data-dimension]')?.click();
   document.querySelector('#copy-result')?.addEventListener('click',copyResult);document.querySelector('#save-card')?.addEventListener('click',saveResultCard);
