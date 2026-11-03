@@ -10,7 +10,7 @@ globalThis.WZTIStats=(()=>{
     let node=home.querySelector('.participant-count');
     if(visibleCount===null){node?.remove();return}
     if(!node){node=document.createElement('p');node.className='participant-count';home.querySelector('#start').after(node)}
-    node.textContent='已有 '+visibleCount.toLocaleString('zh-CN')+' 位农友完成测试';
+    node.textContent='已有'+visibleCount+'位农友开发农格';
   }
   async function request(kind){
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6000);

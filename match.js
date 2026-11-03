@@ -40,6 +40,21 @@ function matchWZTI(config, answers = {}) {
   const displayResult = JSON.parse(JSON.stringify(result));
   // Hero reference values stay in config; the result page shows this user's answers.
   displayResult['性格维度百分比'] = calculateWZTIDimensions(config, answers);
+  const best = scored[0];
+  const evidence = config.reasonStatements ? config.reasonStatements.map((texts, block) => {
+    const matched = config.questions.filter((q,i) => q.block === block && best.hits[i]);
+    return { block, count: matched.length, questions: matched.map(q=>q.id), text: texts[config.heroes[best.index].keys[block]] };
+  }).filter(x=>x.count>=2).sort((a,b)=>b.count-a.count || config.tieBlockOrder.indexOf(a.block)-config.tieBlockOrder.indexOf(b.block)).slice(0,3) : [];
+  const near = scored.slice(1).filter(x=>best.score-x.score <= (config.nearResultScoreGap ?? 2)).slice(0,2).map(x=>{
+    const h=config.results.find(y=>y['英雄名称']===x.hero);
+    return { '英雄名称': x.hero, '人格标题':h['人格标题'], '英雄展示图':h['英雄展示图'], '与主结果同分':x.score===best.score };
+  });
+  displayResult['匹配原因'] = evidence.map(x=>x.text);
+  displayResult['匹配依据题号'] = evidence.map(x=>({topic:x.block,questions:x.questions}));
+  displayResult['匹配原因说明'] = evidence.length ? '这些选择与你的主共鸣英雄有相似之处。' : '你的选择比较多元，本次按整体组合给出主共鸣英雄。';
+  displayResult['接近结果'] = near;
+  displayResult['接近结果说明'] = near.length ? '你也有这些英雄的一面；主结果按整体选择及固定排序给出。' : '';
+  displayResult['维度展示单位'] = '倾向分';
   return { status: 'matched', result: displayResult };
 }
 if (typeof module !== 'undefined' && module.exports) module.exports = { matchWZTI, calculateWZTIDimensions };

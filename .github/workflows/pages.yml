@@ -22,6 +22,8 @@ jobs:
       - name: Check JavaScript
         run: |
           node --check analytics.js
+          node --check session.js
+          node --check share.js
           node --check app.js
           node --check match.js
       - name: Cache lightweight images
@@ -43,7 +45,7 @@ jobs:
       - name: Prepare static files
         run: |
           mkdir _site
-          cp index.html style.css app.js match.js config.json icon-32.png share-cover.jpg _site/
+          cp index.html style.css app.js match.js analytics.js session.js share.js config.json icon-32.png share-cover.jpg share-qr.png _site/
           mkdir -p _site/Images/Outputs_Images
           cp Images/Outputs_Images/*.webp _site/Images/Outputs_Images/
           cp -R Images/Backup _site/Images/
