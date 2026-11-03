@@ -3,7 +3,7 @@ let config=globalThis.WZTI_CONFIG,answers={},current=0,screen='home',transitionT
 const app=document.querySelector('#app');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const asset=s=>{const u=new URL(s.replace(/\.png$/i,'.webp'),document.baseURI);if(config.imageVersions?.[s])u.searchParams.set('v',config.imageVersions[s]);return u.href};
-function show(html){document.documentElement.classList.remove('card-open');document.body.classList.remove('card-open');viewEpoch++;clearTimeout(transitionTimer);document.querySelector('#ui-dialog')?.remove();document.body.classList.toggle('answering',screen==='question');document.documentElement.classList.toggle('answering',screen==='question');app.innerHTML=html;window.scrollTo({top:0,behavior:'instant'});const heading=app.querySelector('h1');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}}
+function show(html){document.querySelector('#copy-toast')?.remove();document.documentElement.classList.remove('card-open');document.body.classList.remove('card-open');viewEpoch++;clearTimeout(transitionTimer);document.querySelector('#ui-dialog')?.remove();document.body.classList.toggle('answering',screen==='question');document.documentElement.classList.toggle('answering',screen==='question');app.innerHTML=html;window.scrollTo({top:0,behavior:'instant'});const heading=app.querySelector('h1');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}}
 function removeSharedHash(){if(location.hash)history.replaceState(null,'',location.pathname+location.search)}
 function home(message=''){
   screen='home';sharedView=false;answers={};current=0;
@@ -42,14 +42,19 @@ function dialog(title,body){
   document.body.append(node);const close=()=>{node.close?.();node.remove();document.documentElement.classList.remove('card-open');document.body.classList.remove('card-open')};node.querySelector('.dialog-close').onclick=close;node.addEventListener('cancel',close);
   if(node.showModal)node.showModal();else node.setAttribute('open','');return node;
 }
+function toast(message){
+  document.querySelector('#copy-toast')?.remove();const node=document.createElement('div');node.id='copy-toast';node.className='toast';node.setAttribute('role','status');node.setAttribute('aria-live','polite');document.body.append(node);node.textContent=message;setTimeout(()=>node.remove(),2500);
+}
 function copyResult(){
+  const epoch=viewEpoch;
   const url=WZTISession.link(answers);
   const manual=()=>{
+    if(epoch!==viewEpoch)return;
     const node=dialog('复制结果链接',`<p>链接包含本次选择，朋友可以看到这次的农格结果。</p><label for="result-link">长按或选中下方链接复制</label><textarea id="result-link" readonly rows="4"></textarea>`);
     const input=node.querySelector('textarea');input.value=url;input.focus();input.select();
   };
   if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>{
-    if(screen==='result'){const status=document.querySelector('#share-status');status.textContent='结果链接已复制，可以发给朋友。'}
+    if(screen==='result'&&epoch===viewEpoch)toast('复制成功');
   },manual);else manual();
 }
 async function saveResultCard(){
@@ -73,15 +78,15 @@ function result({friend=false}={}){
   if(!friend)WZTIStats.completed();
   const r=output.result,p=r['最佳匹配英雄'];lastResult=r;screen='result';
   const reasons=r['匹配原因'],near=r['接近结果'];
-  show(`<article class="result">${friend?'<div class="friend-banner"><span>朋友的农格结果</span><button class="secondary" id="friend-start">我也测一测</button></div>':''}${heroImage(r,'hero')}<div class="eyebrow">你的主要共鸣英雄</div><h1>${esc(r['英雄名称'])}</h1><div class="persona">${esc(r['人格标题'])}</div><blockquote>“${esc(r['英雄台词'])}”</blockquote><section class="panel match-reasons"><h2 class="section-title">你们的共鸣之处</h2>${reasons.length?`<ul class="reason-list">${reasons.map(text=>`<li>${esc(text)}</li>`).join('')}</ul>`:''}</section>${near.length?`<section class="panel near-results"><h2 class="section-title">你也有这些英雄的一面</h2><div class="near-heroes">${near.map(h=>`<div class="near-hero">${heroImage(h,'near')}<strong>${esc(h['英雄名称'])}${h['与主结果同分']?'<small>同分共鸣</small>':''}</strong><span>${esc(h['人格标题'])}</span></div>`).join('')}</div></section>`:''}<section class="panel"><h2 class="section-title">你的性格底色</h2><p>${esc(r['性格描述'])}</p></section><section class="panel tendencies"><h2 class="section-title">你的农格维度</h2><div class="chart" role="group" aria-label="八项作答倾向，点击各项查看说明">${Object.entries(r['性格维度百分比']).map(([k,v],i)=>`<button type="button" class="column" data-dimension="${i}" aria-label="${esc(k)}，${v}／100，查看说明" aria-expanded="false" aria-controls="dimension-detail"><b>${v}<span>／100</span></b><span class="track"><span class="fill" style="height:${v}%"></span></span><small>${esc(k)}</small></button>`).join('')}</div><p class="chart-note">点击其他维度查看详情</p><div id="dimension-detail" class="dimension-detail" hidden></div></section><section class="panel partner"><h2 class="section-title">与你互补的英雄搭档</h2>${heroImage(p,'partner')}<h3>${esc(p['英雄名称'])}</h3><p class="partner-note">按主英雄预设的娱乐推荐，并非独立关系测评或官方CP。</p>${['合拍在哪里','容易摩擦在哪里','相处小建议'].map(key=>`<div class="partner-section"><h4>${key}</h4><p>${esc(p[key])}</p></div>`).join('')}</section><section class="panel sharing"><h2 class="section-title">把这份农格带走</h2><div class="share-keywords">${r['分享关键词'].map(text=>`<span>${esc(text)}</span>`).join('')}</div><div class="share-actions"><button class="primary" id="save-card">保存结果图片</button><button class="secondary" id="copy-result">复制结果链接</button></div><p class="share-disclosure">链接包含本次选择。</p><p id="share-status" role="status"></p></section><div class="result-actions"><button class="secondary" id="restart">${friend?'我也测一测':'再测一次'}</button></div></article>`);
+  show(`<article class="result">${friend?'<div class="friend-banner"><span>朋友的农格结果</span><button class="secondary" id="friend-start">我也去测测</button></div>':''}${heroImage(r,'hero')}<div class="eyebrow">你的主要共鸣英雄</div><h1>${esc(r['英雄名称'])}</h1><div class="persona">${esc(r['人格标题'])}</div><blockquote>“${esc(r['英雄台词'])}”</blockquote><section class="panel match-reasons"><h2 class="section-title">你们的共鸣之处</h2>${reasons.length?`<ul class="reason-list">${reasons.map(text=>`<li>${esc(text)}</li>`).join('')}</ul>`:''}</section>${near.length?`<section class="panel near-results"><h2 class="section-title">你也有这些英雄的一面</h2><div class="near-heroes">${near.map(h=>`<div class="near-hero">${heroImage(h,'near')}<strong>${esc(h['英雄名称'])}${h['与主结果同分']?'<small>同分共鸣</small>':''}</strong><span>${esc(h['人格标题'])}</span></div>`).join('')}</div></section>`:''}<section class="panel"><h2 class="section-title">你的性格底色</h2><p>${esc(r['性格描述'])}</p></section><section class="panel tendencies"><h2 class="section-title">你的农格维度</h2><div class="chart" role="group" aria-label="八项作答倾向，点击各项查看说明">${Object.entries(r['性格维度百分比']).map(([k,v],i)=>`<button type="button" class="column" data-dimension="${i}" aria-label="${esc(k)}，${v}／100，查看说明" aria-expanded="false" aria-controls="dimension-detail"><b>${v}<span>／100</span></b><span class="track"><span class="fill" style="height:${v}%"></span></span><small>${esc(k)}</small></button>`).join('')}</div><p class="chart-note">点击其他维度查看详情</p><div id="dimension-detail" class="dimension-detail" hidden></div></section><section class="panel partner"><h2 class="section-title">与你互补的英雄搭档</h2>${heroImage(p,'partner')}<h3>${esc(p['英雄名称'])}</h3><p class="partner-note">按主英雄预设的娱乐推荐，并非独立关系测评或官方CP。</p>${['合拍在哪里','容易摩擦在哪里','相处小建议'].map(key=>`<div class="partner-section"><h4>${key}</h4><p>${esc(p[key])}</p></div>`).join('')}</section>${!friend?`<section class="panel sharing"><h2 class="section-title">把这份农格带走</h2><div class="share-keywords">${r['分享关键词'].map(text=>`<span>${esc(text)}</span>`).join('')}</div><div class="share-actions"><button class="primary" id="save-card">保存结果图片</button><button class="secondary" id="copy-result">复制结果链接</button></div><p class="share-disclosure">链接包含本次选择。</p></section>`:''}<div class="result-actions"><button class="secondary" id="restart">${friend?'我也去测测':'再测一次'}</button></div></article>`);
   app.querySelectorAll('img[data-original]').forEach(wireResultImage);
   app.querySelectorAll('[data-dimension]').forEach(button=>button.onclick=()=>{
     const index=Number(button.dataset.dimension),rule=config.dimensionRules[index],detail=document.querySelector('#dimension-detail');const close=false;
     app.querySelectorAll('[data-dimension]').forEach(b=>b.setAttribute('aria-expanded','false'));detail.hidden=close;if(close)return;
-    button.setAttribute('aria-expanded','true');detail.innerHTML=`<h3>${esc(rule.name)}</h3><p>${esc(rule.description)}。</p><p>${esc(rule['展示说明'])}</p><p><strong>较低倾向时：</strong>${esc(rule['较低倾向说明'])}</p>`;
+    button.setAttribute('aria-expanded','true');detail.innerHTML=`<h3>${esc(rule.name)}</h3><p>${esc(rule.description)}。</p><p>${esc(rule['展示说明'].replace('；各项独立，不要求相加为100。','。'))}</p><p><strong>较低倾向时：</strong>${esc(rule['较低倾向说明'])}</p>`;
   });
   document.querySelector('[data-dimension]')?.click();
-  document.querySelector('#copy-result').onclick=copyResult;document.querySelector('#save-card').onclick=saveResultCard;
+  document.querySelector('#copy-result')?.addEventListener('click',copyResult);document.querySelector('#save-card')?.addEventListener('click',saveResultCard);
   const restart=()=>{answers={};current=0;sharedView=false;removeSharedHash();home()};
   document.querySelector('#restart').onclick=restart;document.querySelector('#friend-start')?.addEventListener('click',restart);
 }
