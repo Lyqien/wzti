@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Check JavaScript
         run: |
+          node --check analytics.js
           node --check app.js
           node --check match.js
       - name: Cache lightweight images

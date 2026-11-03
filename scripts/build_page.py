@@ -3,6 +3,8 @@ from pathlib import Path
 import json,base64,re,hashlib
 root=Path(__file__).resolve().parents[1]
 config=json.loads((root/'config.json').read_bytes())
+if (root/'analytics.json').exists():
+    config['analytics']=json.loads((root/'analytics.json').read_bytes())
 if (root/'cdn.json').exists():
     cdn=json.loads((root/'cdn.json').read_bytes())
     config['imageCDN']=cdn['base']
@@ -18,7 +20,7 @@ html=re.sub(r'<link rel="stylesheet"[^>]*>',lambda m:'<style>body{visibility:hid
 html=re.sub(r'<script src="(?:match|app)\.js[^>]*></script>','',html)
 html=html.replace('src="Images/Outputs_Images/WZTI-logo.webp"','data-brand-logo=""')
 data=json.dumps(config,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')
-code=(root/'match.js').read_text(encoding='utf-8-sig')+'\n'+(root/'app.js').read_text(encoding='utf-8-sig')
+code=(root/'match.js').read_text(encoding='utf-8-sig')+'\n'+(root/'analytics.js').read_text(encoding='utf-8-sig')+'\n'+(root/'app.js').read_text(encoding='utf-8-sig')
 html=html.replace('</body>','<script>globalThis.WZTI_CONFIG='+data+';</script><script>'+code+'</script></body>')
 (root/'index.html').write_text(html,encoding='utf-8')
 print('Self-contained page:',len(html.encode('utf-8')),'bytes; icon and quiz embedded',flush=True)
