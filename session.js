@@ -1,7 +1,6 @@
 'use strict';
 globalThis.WZTISession=(()=>{
-  const key='wzti-progress-v1',version=WZTI_CONFIG.version;
-  let available=true;
+  const version=WZTI_CONFIG.version;
   function validAnswers(answers,complete=false){
     if(!answers||typeof answers!=='object'||Array.isArray(answers))return false;
     const keys=Object.keys(answers);
@@ -10,21 +9,7 @@ globalThis.WZTISession=(()=>{
       return !!q&&Object.prototype.hasOwnProperty.call(q.options,answers[id]);
     });
   }
-  function read(){
-    try{
-      const raw=localStorage.getItem(key);if(!raw)return {status:'empty'};
-      if(raw.length>6000)return {status:'invalid'};
-      const p=JSON.parse(raw);
-      if(p?.version!==version)return {status:'outdated'};
-      if(p.schema!==1||!validAnswers(p.answers)||!Number.isInteger(p.current)||p.current<0||p.current>=28||!Number.isFinite(p.updatedAt)||p.updatedAt<=0)return {status:'invalid'};
-      if(!Object.keys(p.answers).length)return {status:'empty'};
-      return {status:'saved',progress:p};
-    }catch{try{localStorage.getItem(key);return {status:'invalid'}}catch{available=false;return {status:'unavailable'}}}
-  }
-  function save(answers,current){
-    try{localStorage.setItem(key,JSON.stringify({schema:1,version,answers,current,updatedAt:Date.now()}));return true}catch{available=false;return false}
-  }
-  function clear(){try{localStorage.removeItem(key);return true}catch{available=false;return false}}
+  function clearLegacy(){try{localStorage.removeItem('wzti-progress-v1');localStorage.removeItem('wzti-visitor-v1')}catch{}}
   function encode(answers){
     if(!validAnswers(answers,true))throw Error('incomplete');
     const a=WZTI_CONFIG.questions.map(q=>answers[q.id]).join('');
@@ -44,5 +29,5 @@ globalThis.WZTISession=(()=>{
     }catch{return {status:'invalid'}}
   }
   function link(answers){const url=new URL(location.href);url.hash='r='+encode(answers);return url.href}
-  return {read,save,clear,validAnswers,encode,decode,link,get available(){return available}};
+  return {clearLegacy,validAnswers,encode,decode,link};
 })();

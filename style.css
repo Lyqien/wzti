@@ -99,3 +99,17 @@ button.column[aria-expanded=true]{background:#efe3c7;outline:1px solid #cbb17b;o
 .dialog-content p{font-size:14px;line-height:1.8;color:var(--muted)}.dialog-content label{font-size:13px}.dialog-content textarea{width:100%;padding:12px;box-sizing:border-box;border:1px solid #cbb17b;border-radius:5px;color:var(--ink);background:#fffdf8;font:13px/1.8 system-ui;overflow-wrap:anywhere;resize:vertical}
 .export-image{display:block;width:100%;height:auto;border-radius:5px;border:1px solid #dfd1b2}.download-card{text-decoration:none;margin:20px 0 10px}.dialog-content .hint{font-size:12px}
 @media(max-width:400px){.near-heroes{gap:9px}.near-hero{padding:12px}.chart{gap:8px}button.column small{font-size:11px}.share-actions{gap:10px}}
+
+.near-hero .art-frame{margin:0 0 12px;padding:4px;box-shadow:none;border-radius:6px}
+.near-hero .art-frame:before,.near-hero .art-frame:after{display:none}
+.near-art{width:100%;height:auto;aspect-ratio:3/2;object-fit:contain;display:block}
+.near-hero .image-retry{font-size:10px;padding:4px 6px;bottom:4px;white-space:nowrap}
+html.card-open,body.card-open{overflow:hidden;overscroll-behavior:none}
+html.card-open,body.card-open,.card-dialog{scrollbar-width:none}
+html.card-open::-webkit-scrollbar,body.card-open::-webkit-scrollbar,.card-dialog::-webkit-scrollbar{display:none;width:0}
+.card-dialog[open]{position:fixed;inset:0;margin:0;width:100%;max-width:none;height:100vh;height:100dvh;max-height:none;box-sizing:border-box;border:0;border-radius:0;padding:calc(12px + env(safe-area-inset-top)) 16px calc(12px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;overflow:hidden;overscroll-behavior:none}
+.card-dialog .dialog-heading{margin:0;flex:none}.card-dialog .dialog-heading h2{font-size:19px}
+.card-dialog .dialog-content{min-height:0;flex:1;display:flex;flex-direction:column;align-items:center;gap:12px;overflow:hidden}
+.card-dialog .save-guide{margin:0;color:var(--ink);font-size:22px;font-weight:700;line-height:1.5;flex:none}
+.export-image-wrap{min-height:0;flex:1;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-dialog .export-image{width:100%;height:100%;max-height:100%;object-fit:contain;border:0;border-radius:0;-webkit-touch-callout:default;user-select:auto;-webkit-user-select:auto}
