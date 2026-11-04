@@ -17,7 +17,7 @@ globalThis.WZTIStats=(()=>{
     try{
       const response=await fetch(settings.endpoint,{method:kind?'POST':'GET',headers:{'Authorization':'Bearer '+settings.anonKey,'apikey':settings.anonKey,...(kind?{'Content-Type':'application/json'}:{})},body:kind?JSON.stringify({visitor_id:state.id,kind}):undefined,signal:controller.signal,keepalive:!!kind,cache:'no-store'});
       if(!response.ok)throw Error('stats');
-      const data=await response.json();visibleCount=Number.isSafeInteger(data.completed)&&data.completed>=5000?data.completed:null;render();return true;
+      const data=await response.json();visibleCount=Number.isSafeInteger(data.opened)&&data.opened>=5000?data.opened:null;render();return true;
     }catch{return false}finally{clearTimeout(timer)}
   }
   async function retry(kind,state){for(let attempt=0;attempt<3;attempt++){if(await request(kind,state))return true;if(attempt<2)await new Promise(resolve=>setTimeout(resolve,2000*(attempt+1)))}return false}

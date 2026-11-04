@@ -39,7 +39,7 @@ begin
   end if;
   update public.wzti_totals set opened = opened + new_open, completed = completed + new_complete
     where id = true;
-  select jsonb_build_object('completed',case when completed >= display_threshold then completed else null end)
+  select jsonb_build_object('opened',case when opened >= display_threshold then opened else null end)
     into result from public.wzti_totals where id = true;
   return result;
 end;
@@ -49,7 +49,7 @@ grant execute on function public.wzti_record(uuid,text) to service_role;
 
 create function public.wzti_public_count()
 returns jsonb language sql stable security invoker set search_path = '' as $$
-  select jsonb_build_object('completed', case when completed >= display_threshold then completed else null end)
+  select jsonb_build_object('opened', case when opened >= display_threshold then opened else null end)
   from public.wzti_totals where id = true;
 $$;
 revoke all on function public.wzti_public_count() from public, anon, authenticated;
