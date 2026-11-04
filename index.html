@@ -202,7 +202,9 @@ globalThis.WZTIStats=(()=>{
   if(!settings?.endpoint||!settings?.anonKey)return {home(){},completed(){},newVisit(){}};
   const newState=()=>({id:crypto.randomUUID(),hasOpened:false,openPending:false,completePending:false,completeSent:false});
   // A fresh ID for each page opening; only retry requests share an ID.
-  let visit=newState(),visibleCount=null;
+  let visibleCount=8510;
+  try{const cached=Number(localStorage.getItem('wzti-open-count'));if(Number.isSafeInteger(cached)&&cached>=visibleCount)visibleCount=cached}catch{}
+  let visit=newState();
   function render(){
     const home=document.querySelector('.home');if(!home)return;
     let node=home.querySelector('.participant-count');
@@ -215,7 +217,7 @@ globalThis.WZTIStats=(()=>{
     try{
       const response=await fetch(settings.endpoint,{method:kind?'POST':'GET',headers:{'Authorization':'Bearer '+settings.anonKey,'apikey':settings.anonKey,...(kind?{'Content-Type':'application/json'}:{})},body:kind?JSON.stringify({visitor_id:state.id,kind}):undefined,signal:controller.signal,keepalive:!!kind,cache:'no-store'});
       if(!response.ok)throw Error('stats');
-      const data=await response.json();visibleCount=Number.isSafeInteger(data.opened)&&data.opened>=5000?data.opened:null;render();return true;
+      const data=await response.json();if(Number.isSafeInteger(data.opened)&&data.opened>=0){visibleCount=data.opened;try{localStorage.setItem('wzti-open-count',String(visibleCount))}catch{}}render();return true;
     }catch{return false}finally{clearTimeout(timer)}
   }
   async function retry(kind,state){for(let attempt=0;attempt<3;attempt++){if(await request(kind,state))return true;if(attempt<2)await new Promise(resolve=>setTimeout(resolve,2000*(attempt+1)))}return false}
@@ -223,7 +225,7 @@ globalThis.WZTIStats=(()=>{
   return {
     home(){render();const state=visit;setTimeout(()=>{if(state!==visit)return;if(!state.hasOpened)opened(state);else request()},0)},
     completed(){const state=visit;if(state.completeSent||state.completePending)return;state.completePending=true;setTimeout(()=>retry('completed',state).then(ok=>{state.completeSent=ok;state.completePending=false}),0)},
-    newVisit(){visit=newState();visibleCount=null}
+    newVisit(){visit=newState()}
   };
 })();
 

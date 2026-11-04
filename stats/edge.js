@@ -26,7 +26,7 @@ export function createHandler(env,fetcher=fetch) {
       if(!response.ok) throw Error('database');
       const data=await response.json();
       // Never forward raw database errors, private totals, or event records.
-      return reply({opened:Number.isSafeInteger(data.opened)&&data.opened>=5000?data.opened:null});
+      return reply({opened:Number.isSafeInteger(data.opened)&&data.opened>=0?data.opened:null});
     } catch {return reply({error:'unavailable'},503)}
   };
 }
